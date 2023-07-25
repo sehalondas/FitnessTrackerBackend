@@ -3,7 +3,9 @@ const client = require("./client");
 // database functions
 async function createActivity({ name, description }) {
   // return the new activity
-  const { rows: [activity] } = await client.query(
+  const {
+    rows: [activity],
+  } = await client.query(
     `
   INSERT INTO activities (name, description)
   VALUES ($1, $2)
@@ -26,7 +28,9 @@ async function getAllActivities() {
 }
 
 async function getActivityById(id) {
-  const { rows: [activity] } = await client.query(
+  const {
+    rows: [activity],
+  } = await client.query(
     `
   SELECT * FROM activities
   WHERE id = $1;
@@ -37,7 +41,9 @@ async function getActivityById(id) {
 }
 
 async function getActivityByName(name) {
-  const { rows: [activity] } = await client.query(
+  const {
+    rows: [activity],
+  } = await client.query(
     `
   SELECT *
   FROM activities
@@ -52,24 +58,34 @@ async function getActivityByName(name) {
 async function attachActivitiesToRoutines(routines) {}
 
 async function updateActivity({ id, ...fields }) {
+  const string = Object.keys(fields)
+    .map(
+      (key, index) =>
+        `"${key}" = $${index + 1}
+    `
+    )
+    .join(", ");
+
   // don't try to update the id
   // do update the name and description
   // return the updated activity
-  const name = fields.name;
-  const description = fields.description;
-  const { rows: [activity] } = await client.query(
+  // const name = fields.name;
+  // const description = fields.description;
+  const {
+    rows: [activity],
+  } = await client.query(
     `
     UPDATE activities
-    SET name = $1, description = $2
-    WHERE id = $3
+    SET ${string} 
+    WHERE id=${id}
     RETURNING *;
   `,
-    [fields, fields, id]
+    Object.values(fields)
   );
-  console.log("name", name);
-  console.log("description", description);
-  console.log("fields", {fields});
-  console.log("update activites", activity);
+  // console.log("name", name);
+  // console.log("description", description);
+  // console.log("fields", {fields});
+  // console.log("update activites", activity);
   return activity;
 }
 
