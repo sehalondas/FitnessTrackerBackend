@@ -16,9 +16,7 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 }
 
 async function getRoutineById(id) {
-  const {
-    rows: routine
-  } = await client.query(`
+  const { rows: routine } = await client.query(`
   SELECT * 
   FROM routines
   WHERE id = ${id};
@@ -27,7 +25,9 @@ async function getRoutineById(id) {
 }
 
 async function getRoutinesWithoutActivities() {
-  const { rows: [routine] } = await client.query(`
+  const {
+    rows: [routine],
+  } = await client.query(`
   SELECT * 
   FROM routines
   WHERE something IN;
@@ -36,7 +36,9 @@ async function getRoutinesWithoutActivities() {
 }
 
 async function getAllRoutines() {
-  const { rows: [routine] } = await client.query(`
+  const {
+    rows: [routine],
+  } = await client.query(`
   SELECT * 
   FROM routines;
   `);
@@ -44,7 +46,9 @@ async function getAllRoutines() {
 }
 
 async function getAllPublicRoutines() {
-  const { rows: [routine] } = await client.query(`
+  const {
+    rows: [routine],
+  } = await client.query(`
   SELECT * 
   FROM routines 
   WHERE "isPublic" = true; 
@@ -54,7 +58,7 @@ async function getAllPublicRoutines() {
 
 async function getAllRoutinesByUser({ username }) {
   const {
-    rows: [routine]
+    rows: [routine],
   } = await client.query(
     `
   SELECT * 

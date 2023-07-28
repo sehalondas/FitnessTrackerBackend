@@ -4,7 +4,7 @@ const client = require("./client");
 async function createActivity({ name, description }) {
   // return the new activity
   const {
-    rows: [activity]
+    rows: [activity],
   } = await client.query(
     `
   INSERT INTO activities (name, description)
@@ -55,8 +55,37 @@ async function getActivityByName(name) {
 }
 
 // used as a helper inside db/routines.js
-async function attachActivitiesToRoutines(routines) {
-  
+async function attachActivitiesToRoutines(routine) {
+  try {
+    const { rows: activities } = await client.query(`
+    SELECT * FROM activities
+    JOIN routine_activities ON activities.id-routine_activities."activityId"
+    WHERE routine_activities."routineId"= ${routine.id};
+    `);
+
+    const { rows: routine_activities } = await client.query(`
+    SELECT routine_activities.*
+    FROM routine_activities
+    JOIN activities ON routine_activities."activityId"= activities.id
+    WHERE routine_activities."routineId"= ${routine.id};
+    `);
+
+    activities.map((activity) =>
+      routine_activities.filter((routine_activity) => {
+        if (activity.id === routine_activity.activityId) {
+          activity.count = routine_activity.count;
+          activity.duration = routine_activity.duration;
+          activity.routineId = routine_activity.routineId;
+          activity.routineActivityId = routine_activity.id;
+        }
+      })
+    );
+
+    routine.activities = activities;
+    return activities;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function updateActivity({ id, ...fields }) {
