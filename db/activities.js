@@ -4,7 +4,7 @@ const client = require("./client");
 async function createActivity({ name, description }) {
   // return the new activity
   const {
-    rows: [activity],
+    rows: [activity]
   } = await client.query(
     `
   INSERT INTO activities (name, description)
@@ -55,7 +55,9 @@ async function getActivityByName(name) {
 }
 
 // used as a helper inside db/routines.js
-async function attachActivitiesToRoutines(routines) {}
+async function attachActivitiesToRoutines(routines) {
+  
+}
 
 async function updateActivity({ id, ...fields }) {
   const string = Object.keys(fields)

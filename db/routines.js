@@ -5,54 +5,64 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
     rows: [routine],
   } = await client.query(
     `
-  INSERT INTO routines("creatorId", "isPublic", name, goal)
-  VALUES ($1, $2, $3, $4)
-  RETURNING *;
-  `,
+    INSERT INTO routines ("creatorId", "isPublic", name, goal)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;
+    `,
     [creatorId, isPublic, name, goal]
   );
+
   return routine;
 }
 
 async function getRoutineById(id) {
   const {
-    rows: [routine],
+    rows: routine
   } = await client.query(`
-  SELECT * FROM routines
-  WHERE id = ${id}
+  SELECT * 
+  FROM routines
+  WHERE id = ${id};
   `);
   return routine;
 }
 
 async function getRoutinesWithoutActivities() {
-  const { rows } = await client.query(`
-  SELECT * FROM routines
+  const { rows: [routine] } = await client.query(`
+  SELECT * 
+  FROM routines
+  WHERE something IN;
   `);
-  return rows;
+  return routine;
 }
 
 async function getAllRoutines() {
-  const { rows } = await client.query(`
-  SELECT * FROM routines;
+  const { rows: [routine] } = await client.query(`
+  SELECT * 
+  FROM routines;
   `);
-  return rows;
+  return routine;
 }
 
 async function getAllPublicRoutines() {
-  const { rows } = await client.query(`
-  SELECT * FROM routines 
+  const { rows: [routine] } = await client.query(`
+  SELECT * 
+  FROM routines 
   WHERE "isPublic" = true; 
   `);
-  return rows;
+  return routine;
 }
 
 async function getAllRoutinesByUser({ username }) {
   const {
-    rows: [routine],
+    rows: [routine]
   } = await client.query(
     `
-  SELECT * FROM routines
-  WHERE "creatorId" IN ( SELECT id FROM users WHERE username = $1 ); 
+  SELECT * 
+  FROM routines
+  WHERE "creatorId" IN ( 
+    SELECT id 
+    FROM users 
+    WHERE username = $1 ); 
   `,
     [username]
   );

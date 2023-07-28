@@ -5,7 +5,16 @@ async function addActivityToRoutine({
   activityId,
   count,
   duration,
-}) {}
+}) {
+  const {
+    rows: activity
+  } = client.query(`
+  INSERT INTO routine_activities("routineId", "activityId", count, duration)
+  VALUES ($1, $2, $3, $4)
+  RETURNING *;
+  `, [routineId, activityId, count, duration])
+  return activity;
+}
 
 async function getRoutineActivityById(id) {}
 
