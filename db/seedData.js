@@ -1,18 +1,23 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
 // const { } = require('./');
 const client = require("./client");
-const { createUser } = require("./users");
-const { createActivity } = require("./activities");
-const { createRoutine } = require("./routines");
+const {
+  createUser,
+  createActivity,
+  createRoutine,
+  getRoutinesWithoutActivities,
+  getAllActivities,
+  addActivityToRoutine,
+} = require("./index");
 
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
   try {
-    await client.query(`DROP TABLE IF EXISTS users cascade;`);
-    await client.query(`DROP TABLE IF EXISTS activities cascade;`);
-    await client.query(`DROP TABLE IF EXISTS routines cascade;`);
-    await client.query(`DROP TABLE IF EXISTS routine_activities cascade;`);
+    await client.query(`DROP TABLE IF EXISTS routine_activities CASCADE;`);
+    await client.query(`DROP TABLE IF EXISTS routines CASCADE;`);
+    await client.query(`DROP TABLE IF EXISTS activities CASCADE;`);
+    await client.query(`DROP TABLE IF EXISTS users CASCADE;`);
   } catch (error) {
     console.log("Error droping tables");
     throw error;

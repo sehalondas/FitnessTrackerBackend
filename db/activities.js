@@ -32,7 +32,8 @@ async function getActivityById(id) {
     rows: [activity],
   } = await client.query(
     `
-  SELECT * FROM activities
+  SELECT * 
+  FROM activities
   WHERE id = $1;
   `,
     [id]
@@ -58,13 +59,14 @@ async function getActivityByName(name) {
 async function attachActivitiesToRoutines(routine) {
   try {
     const { rows: activities } = await client.query(`
-    SELECT * FROM activities
-    JOIN routine_activities ON activities.id-routine_activities."activityId"
+    SELECT * 
+    FROM activities
+    JOIN routine_activities ON activities.id = routine_activities."activityId"
     WHERE routine_activities."routineId"= ${routine.id};
     `);
 
     const { rows: routine_activities } = await client.query(`
-    SELECT routine_activities.*
+    SELECT *
     FROM routine_activities
     JOIN activities ON routine_activities."activityId"= activities.id
     WHERE routine_activities."routineId"= ${routine.id};

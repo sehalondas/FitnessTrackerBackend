@@ -7,24 +7,91 @@ async function addActivityToRoutine({
   duration,
 }) {
   const {
-    rows: activity
-  } = client.query(`
+    rows: [activity],
+  } = client.query(
+    `
   INSERT INTO routine_activities("routineId", "activityId", count, duration)
   VALUES ($1, $2, $3, $4)
   RETURNING *;
-  `, [routineId, activityId, count, duration])
+  `,
+    [routineId, activityId, count, duration]
+  );
   return activity;
 }
 
-async function getRoutineActivityById(id) {}
+async function getRoutineActivityById(id) {
+  const {
+    rows: [routineActivity],
+  } = await client.query(
+    `
+    SELECT *
+    FROM routine_activity
+    WHERE id = $1;
+    `,
+    [id]
+  );
+  return routineActivity;
+}
 
-async function getRoutineActivitiesByRoutine({ id }) {}
+async function getRoutineActivitiesByRoutine({ id }) {
+  const { rows: routineActivities } = await client.query(
+    `
+    SELECT *
+    FROM routine_activites
+    WHERE id = $1;
+    `,
+    [id]
+  );
+  return routineActivities;
+}
 
-async function updateRoutineActivity({ id, ...fields }) {}
+async function updateRoutineActivity({ id, ...fields }) {
+  const string = Object.keys(fields)
+    .map(
+      (key, index) =>
+        `"${key}" = $${index + 1}
+    `
+    )
+    .join(", ");
 
-async function destroyRoutineActivity(id) {}
+  const {
+    rows: [routineActivities],
+  } = await client.query(
+    `
+      UPDATE routine_activites
+      SET ${string} 
+      WHERE id=${id}
+      RETURNING *;
+    `,
+    Object.values(fields)
+  );
+  return routineActivities;
+}
 
-async function canEditRoutineActivity(routineActivityId, userId) {}
+async function destroyRoutineActivity(id) {
+  const { rows: routineActivities } = await client.query(
+    `
+  DELETE FROM routine_activities
+  WHERE id = $1
+  RETURNING *;
+  `,
+    [id]
+  );
+  return routineActivities;
+}
+
+async function canEditRoutineActivity(routineActivityId, userId) {
+  const { rows: routineActivities } = await client.query(
+    `
+    SELECT "creatorId"
+    FROM routine_activities
+    JOIN routines ON "routineId" = routines.id
+    WHERE routine_activites.id = $1;
+    `,
+    [routineActivityId]
+  );
+  return routineActivities && routineActivities.creatorId === userId;
+}
 
 module.exports = {
   getRoutineActivityById,
