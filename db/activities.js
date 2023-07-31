@@ -41,6 +41,8 @@ async function getActivityById(id) {
   return activity;
 }
 
+Promise;
+
 async function getActivityByName(name) {
   const {
     rows: [activity],
