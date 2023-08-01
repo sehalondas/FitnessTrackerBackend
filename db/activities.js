@@ -64,15 +64,15 @@ async function attachActivitiesToRoutines(routine) {
     SELECT * 
     FROM activities
     JOIN routine_activities ON activities.id = routine_activities."activityId"
-    WHERE routine_activities."routineId"= ${routine.id};
-    `);
+    WHERE routine_activities."routineId"= $1;
+    `, [routine.id]);
 
     const { rows: routine_activities } = await client.query(`
     SELECT *
     FROM routine_activities
     JOIN activities ON routine_activities."activityId"= activities.id
-    WHERE routine_activities."routineId"= ${routine.id};
-    `);
+    WHERE routine_activities."routineId"= $1;
+    `, [routine.id]);
 
     activities.map((activity) =>
       routine_activities.filter((routine_activity) => {

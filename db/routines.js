@@ -17,11 +17,27 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 }
 
 async function getRoutineById(id) {
-  const { rows: routine } = await client.query(`
+  const {
+    rows: [routine],
+  } = await client.query(
+    `
   SELECT * 
   FROM routines
-  WHERE id = ${id};
-  `);
+  WHERE id = $1;
+  `,
+    [id]
+  );
+
+  const { rows: activities } = await client.query(
+    `
+    SELECT activities.*
+    FROM activities
+    JOIN routine_activities ON activities.id = routine_activities."activityId"
+    WHERE routine_activities."routineId" = $1;
+    `,
+    [id]
+  );
+  routine.activities= activities;
   return routine;
 }
 
@@ -35,11 +51,14 @@ async function getRoutinesWithoutActivities() {
 }
 
 async function getAllRoutines() {
-  const { rows: routine } = await client.query(`
-  SELECT * 
+  const { rows: routineId } = await client.query(`
+  SELECT id 
   FROM routines;
   `);
-  return routine;
+  const routines = await Promise.all(
+    routineId.map((routine) => getRoutineById(routine.id))
+  );
+  return routines;
 }
 
 async function getAllPublicRoutines() {
@@ -126,7 +145,7 @@ async function destroyRoutine(id) {
   const { rows: routine } = await client.query(
     `
   DELETE FROM routines
-  WHERE "routineId" = $1;
+  WHERE id = $1;
   `,
     [id]
   );

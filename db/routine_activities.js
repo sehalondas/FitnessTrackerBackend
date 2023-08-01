@@ -8,7 +8,7 @@ async function addActivityToRoutine({
 }) {
   const {
     rows: [activity],
-  } = client.query(
+  } = await client.query(
     `
   INSERT INTO routine_activities("routineId", "activityId", count, duration)
   VALUES ($1, $2, $3, $4)
@@ -25,7 +25,7 @@ async function getRoutineActivityById(id) {
   } = await client.query(
     `
     SELECT *
-    FROM routine_activity
+    FROM routine_activities
     WHERE id = $1;
     `,
     [id]
@@ -37,8 +37,8 @@ async function getRoutineActivitiesByRoutine({ id }) {
   const { rows: routineActivities } = await client.query(
     `
     SELECT *
-    FROM routine_activites
-    WHERE id = $1;
+    FROM routine_activities
+    WHERE "routineId" = $1;
     `,
     [id]
   );
@@ -58,7 +58,7 @@ async function updateRoutineActivity({ id, ...fields }) {
     rows: [routineActivities],
   } = await client.query(
     `
-      UPDATE routine_activites
+      UPDATE routine_activities
       SET ${string} 
       WHERE id=${id}
       RETURNING *;
@@ -69,7 +69,7 @@ async function updateRoutineActivity({ id, ...fields }) {
 }
 
 async function destroyRoutineActivity(id) {
-  const { rows: routineActivities } = await client.query(
+  const { rows: [routineActivities] } = await client.query(
     `
   DELETE FROM routine_activities
   WHERE id = $1
@@ -81,12 +81,12 @@ async function destroyRoutineActivity(id) {
 }
 
 async function canEditRoutineActivity(routineActivityId, userId) {
-  const { rows: routineActivities } = await client.query(
+  const { rows: [routineActivities] } = await client.query(
     `
     SELECT "creatorId"
     FROM routine_activities
     JOIN routines ON "routineId" = routines.id
-    WHERE routine_activites.id = $1;
+    WHERE routine_activities.id = $1;
     `,
     [routineActivityId]
   );
