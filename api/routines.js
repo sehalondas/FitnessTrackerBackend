@@ -12,8 +12,6 @@ const {
 const jwt = require("jsonwebtoken");
 const { requireAuthentication } = require("./utils");
 
-// GET /api/routines
-
 router.get("/", async (req, res, next) => {
   try {
     const routines = await getAllPublicRoutines();
@@ -22,7 +20,6 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
-// POST /api/routines
 
 router.post("/", requireAuthentication, async (req, res, next) => {
   const { isPublic, name, goal } = req.body;
@@ -45,8 +42,6 @@ router.post("/", requireAuthentication, async (req, res, next) => {
     next(error);
   }
 });
-
-// PATCH /api/routines/:routineId
 
 router.patch("/:routineId", requireAuthentication, async (req, res, next) => {
   const { routineId } = req.params;
@@ -79,8 +74,6 @@ router.patch("/:routineId", requireAuthentication, async (req, res, next) => {
   }
 });
 
-// DELETE /api/routines/:routineId
-
 router.delete("/:routineId", async (req, res, next) => {
   const { routineId } = req.params;
 
@@ -105,8 +98,6 @@ router.delete("/:routineId", async (req, res, next) => {
     next(error);
   }
 });
-
-// POST /api/routines/:routineId/activities
 
 router.post("/:routineId/activities", async (req, res, next) => {
   const { routineId, activityId, count, duration } = req.body;

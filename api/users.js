@@ -1,5 +1,3 @@
-/* eslint-disable no-useless-catch */
-// require('dotenv').config();
 const express = require("express");
 const {
   getUserByUsername,
@@ -11,8 +9,6 @@ const {
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { requireAuthentication } = require("./utils.js");
-
-// POST /api/users/register
 
 router.post("/register", async (req, res, next) => {
   const { username, password } = req.body;
@@ -59,8 +55,6 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-// POST /api/users/login
-
 router.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
 
@@ -89,8 +83,6 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-// GET /api/users/me
-
 router.get("/me", requireAuthentication, async (req, res, next) => {
   try {
     const bearerHeader = req.headers.authorization.split(" ")[1];
@@ -104,8 +96,6 @@ router.get("/me", requireAuthentication, async (req, res, next) => {
     next();
   }
 });
-
-// GET /api/users/:username/routines
 
 router.get("/:username/routines", async (req, res, next) => {
   const { username } = req.params;

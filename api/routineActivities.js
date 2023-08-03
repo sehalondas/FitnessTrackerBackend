@@ -9,8 +9,6 @@ const {
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
-// PATCH /api/routine_activities/:routineActivityId
-
 router.patch("/:routineActivityId", async (req, res, next) => {
   if (!req.headers.authorization) {
     next();
@@ -48,8 +46,6 @@ router.patch("/:routineActivityId", async (req, res, next) => {
     next(error);
   }
 });
-
-// DELETE /api/routine_activities/:routineActivityId
 
 router.delete("/:routineActivityId", async (req, res, next) => {
   if (!req.headers.authorization) {

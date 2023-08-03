@@ -1,8 +1,6 @@
 const client = require("./client");
 
-// database functions
 async function createActivity({ name, description }) {
-  // return the new activity
   const {
     rows: [activity],
   } = await client.query(
@@ -17,7 +15,6 @@ async function createActivity({ name, description }) {
 }
 
 async function getAllActivities() {
-  // select and return an array of all activities
   const { rows: activity } = await client.query(
     `
   SELECT *
@@ -55,7 +52,6 @@ async function getActivityByName(name) {
   return activity;
 }
 
-// used as a helper inside db/routines.js
 async function attachActivitiesToRoutines(routine) {
   try {
     const { rows: activities } = await client.query(`
@@ -99,12 +95,7 @@ async function updateActivity({ id, ...fields }) {
     )
     .join(", ");
 
-  // don't try to update the id
-  // do update the name and description
-  // return the updated activity
-  // const name = fields.name;
-  // const description = fields.description;
-  const {
+  
     rows: [activity],
   } = await client.query(
     `
@@ -115,10 +106,6 @@ async function updateActivity({ id, ...fields }) {
   `,
     Object.values(fields)
   );
-  // console.log("name", name);
-  // console.log("description", description);
-  // console.log("fields", {fields});
-  // console.log("update activites", activity);
   return activity;
 }
 

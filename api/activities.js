@@ -9,8 +9,6 @@ const {
 } = require("../db");
 const router = express.Router();
 
-// GET /api/activities/:activityId/routines
-
 router.get("/:activityId/routines", async (req, res, next) => {
   const { activityId } = req.params;
   try {
@@ -32,8 +30,6 @@ router.get("/:activityId/routines", async (req, res, next) => {
   }
 });
 
-// GET /api/activities
-
 router.get("/", async (req, res, next) => {
   try {
     const activities = await getAllActivities();
@@ -43,8 +39,6 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
-
-// POST /api/activities
 
 router.post("/", async (req, res, next) => {
   if (!req.headers.authorization) {
@@ -71,8 +65,6 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-
-// PATCH /api/activities/:activityId
 
 router.patch("/:activityId", async (req, res, next) => {
   if (!req.headers.authorization) {
