@@ -32,7 +32,7 @@ async function getRoutineById(id) {
     SELECT username
     FROM users
     JOIN routines ON users.id=routines."creatorId"
-    WHERE routines."creatorId"=${routine.creatorId};
+    WHERE routines."creatorId"= ${routine.creatorId};
     `);
 
     routine.creatorName = username.username;
@@ -44,9 +44,10 @@ async function getRoutineById(id) {
 
 async function getRoutinesWithoutActivities() {
   const { rows: routine } = await client.query(`
-  SELECT * 
+  SELECT routines.*
   FROM routines
-  WHERE routine_activities.activityId IS NULL;
+  LEFT JOIN routine_activities ON routines.id = routine_activities."routineId"
+  WHERE routine_activities."activityId" IS NULL;
   `);
   return routine;
 }
