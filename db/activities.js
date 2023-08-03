@@ -96,7 +96,7 @@ async function updateActivity({ id, ...fields }) {
     .join(", ");
 
   
-    rows: [activity],
+    const {rows: [activity],
   } = await client.query(
     `
     UPDATE activities
